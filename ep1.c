@@ -51,8 +51,6 @@ int main() {
         if (option == 'F') {
             break;
         }
-
-        break;
     }
 
     return 0;
@@ -106,7 +104,7 @@ RetData_ *ReadFileMatrix(char fileName[]) {
 
     if (fp == NULL) {
         printf("O arquivo não existe\n");
-        return NULL;
+        perror("fopen");
     }
     fscanf(fp, " %d", &n);
 
