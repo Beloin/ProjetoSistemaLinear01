@@ -4,6 +4,7 @@
 
 #include "stdio.h"
 #include <malloc.h>
+#include "math.h"
 
 // Needed Structs
 typedef struct RetData_ {
@@ -111,7 +112,7 @@ RetData_ *ReadFileMatrix(char file_name[]) {
     ch = fgetc(file);
     n = ch - '0';
     double **mx = CreatePrimitiveMatrix(n, n + 1);
-
+    fscanf(file, "%lf %lf %lf", mx[i]);
 
     while (!feof(file)) {
         ch = fgetc(file);
@@ -146,6 +147,80 @@ RetData_ *ReadFileMatrix(char file_name[]) {
     data->n = n;
     return data;
 }
+
+RetData_ *readTeste(char fileName[]) {
+    FILE *file;
+    char ch;
+    RetData_ *data = malloc(sizeof(RetData_));
+    int n, i = 0, j = 0, negativeFlag = 0, trans;
+
+    file = fopen(fileName, "r");
+    if (file == NULL) {
+        perror("fopen");
+    }
+    ch = fgetc(file);
+    n = ch - '0';
+    double **mx = CreatePrimitiveMatrix(n, n + 1);
+
+
+    int currentNumber[500];
+    int startedNumber = 0;
+    int currentNumberSize = 0;
+    while (!feof(file)) {
+        ch = fgetc(file);
+
+        if (ch == ' ' || ch == '\n') {
+            if (startedNumber) {
+                int number = 0;
+                for (int k = 0; k < currentNumberSize; ++k) {
+                    number += (int) (currentNumber[k] * pow(10, (currentNumberSize - 1 - k)));
+                }
+
+                if (negativeFlag) {
+                    number = -number;
+                    negativeFlag = 0;
+                }
+
+                currentNumberSize = 0;
+                mx[i][j] = number;
+
+                j++;
+                if (j > n) {
+                    j = 0;
+                    i++;
+                }
+
+                if (i == n) {
+                    break;
+                }
+            }
+            startedNumber = 0;
+            continue;
+        }
+
+        if (ch == '-') {
+            negativeFlag = 1;
+            currentNumberSize = 0;
+            continue;
+        }
+
+        // Ignore "."
+//        if (ch == '.') {
+//            currentNumber[currentNumberSize] = ch;
+//            currentNumberSize++;
+//            continue;
+//        }
+
+        trans = ch - '0';
+        startedNumber = 1;
+        currentNumber[currentNumberSize] = trans;
+        currentNumberSize++;
+    }
+
+    data->matrix = mx;
+    data->n = n;
+    return data;
+}
 // END: UTILS
 
 
@@ -155,10 +230,10 @@ void getResults(double **mx, double **output);
 void JordanMethod(double **m, int n);
 
 void LinearSystemMenu() {
-    char fileName[200] = "/home/beloin/Documents/aulas/8_sem/CN/TIAndTSLinearSystemSolution/matrix.txt";
-    printf("Por favor, informe o caminho absoluto do arquivo: ");
-    scanf("%s", fileName);
-    RetData_ *data = ReadFileMatrix(fileName);
+    char fileName[200] = "/home/beloin/Documents/aulas/8_sem/CN/Exercícios/project-01-cn-ep1/examples/matrix2.txt";
+//    printf("Por favor, informe o caminho absoluto do arquivo: ");
+//    scanf("%s", fileName);
+    RetData_ *data = readTeste(fileName);
     double **mx = data->matrix;
     int n = data->n;
     ShowPrimitiveMatrix(mx, n, n + 1);
