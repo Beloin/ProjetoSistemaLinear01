@@ -7,7 +7,7 @@
 
 void JordanMethod(double **m, int n) {
     int i, j, k, l, i1, aux2, *varsTrack;
-    double multiplier, aux;
+    double multiplier, aux, *aux3;
 
     // Keep track of the vars
     varsTrack = malloc(sizeof(int) * n);
@@ -25,7 +25,7 @@ void JordanMethod(double **m, int n) {
 
             // Change null pivots to another, not null, column
             if (j < n) {
-                // TODO: Keep track of changes
+                // Keep track of changes
                 // Column i, changed to j
                 aux2 = varsTrack[i];
                 varsTrack[i] = varsTrack[j];
@@ -56,14 +56,16 @@ void JordanMethod(double **m, int n) {
             }
         }
     }
-    printf("VARS SEQUENCE:\n");
-    printf("{ ");
+
+    // RE-INVERT ROW ORDER
     for (int j1 = 0; j1 < n; ++j1) {
-        if (j1+1 == n) {
-            printf("%d", varsTrack[j1]);
-        } else {
-            printf("%d, ", varsTrack[j1]);
-        }
+        if (varsTrack[j1] == j1) continue;
+        int change = varsTrack[j1];
+        aux3 = m[j1];
+        m[j1] = m[change];
+        m[change] = aux3;
+
+        varsTrack[j1] = j1;
+        varsTrack[change] = change;
     }
-    printf(" }\n");
 }
