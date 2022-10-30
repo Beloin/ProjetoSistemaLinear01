@@ -17,7 +17,7 @@ double **CreatePrimitiveMatrix(int i, int j);
 
 void ShowPrimitiveMatrix(double **m, int i, int j);
 
-RetData_* ReadFileMatrix(char file_name[]);
+RetData_ *ReadFileMatrix(char file_name[]);
 
 // Force the return to be one of those: C, S, E or F
 char PrintMainMenuAndReturnOption();
@@ -50,6 +50,8 @@ int main() {
         if (option == 'F') {
             break;
         }
+
+        break;
     }
 
     return 0;
@@ -93,10 +95,12 @@ void ShowPrimitiveMatrix(double **m, int i, int j) {
     printf("}\n");
 }
 
+// BUG: READ ONLY NUMBERS OF ONE
+// TODO: SIMLPE AND BREAK CHARS AND USE THAT AS NUMBERS
 RetData_ *ReadFileMatrix(char file_name[]) {
     FILE *file;
     char ch;
-    RetData_ *data = malloc(sizeof (RetData_));
+    RetData_ *data = malloc(sizeof(RetData_));
     int n, i = 0, j = 0, negativeFlag = 0, trans;
 
     file = fopen(file_name, "r");
@@ -152,16 +156,21 @@ void JordanMethod(double **m, int n);
 
 void LinearSystemMenu() {
     char fileName[200] = "/home/beloin/Documents/aulas/8_sem/CN/TIAndTSLinearSystemSolution/matrix.txt";
-    printf("Por favor, informe o caminho absoluto do arquivo\n");
+    printf("Por favor, informe o caminho absoluto do arquivo: ");
     scanf("%s", fileName);
     RetData_ *data = ReadFileMatrix(fileName);
     double **mx = data->matrix;
     int n = data->n;
-    ShowPrimitiveMatrix(mx, n, n+1);
+    ShowPrimitiveMatrix(mx, n, n + 1);
+    JordanMethod(mx, n);
+    ShowPrimitiveMatrix(mx, n, n + 1);
+
 }
 
 void getResults(double **mx, double **output) {
-
+    for (int i = 0; i < 0; ++i) {
+        *output[i] = mx[i][i];
+    }
 }
 
 void JordanMethod(double **m, int n) {
@@ -224,6 +233,14 @@ void JordanMethod(double **m, int n) {
         m[j1] = m[change];
         m[change] = aux3;
 
+        // TODO INVERT COLUMN TOO
+        // Column change
+        for (l = 0; l < n; l++) {
+            aux = m[l][j1];
+            m[l][j1] = m[l][change];
+            m[l][change] = aux;
+        }
+
         varsTrack[j1] = j1;
         varsTrack[change] = change;
     }
@@ -231,3 +248,17 @@ void JordanMethod(double **m, int n) {
 
 
 // END: LinearSystemMenu
+
+// START: Menu
+char PrintMainMenuAndReturnOption() {
+    return 'S';
+}
+// END: Menu
+
+// START: NumericalConversionMenu
+void NumericalConversionMenu() {}
+// END: NumericalConversionMenu
+
+// START: AlgebraicEquationMenu
+void AlgebraicEquationMenu() {}
+// END: AlgebraicEquationMenu
