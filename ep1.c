@@ -127,7 +127,9 @@ RetData_ *ReadFileMatrix(char fileName[]) {
 
 // START: LinearSystemMenu
 void PrintResults(double **mx, int n);
+
 int GetResultsAndReturnType(double **mx, double *results, int n);
+
 void JordanMethod(double **m, int n);
 
 void LinearSystemMenu() {
@@ -157,9 +159,9 @@ void PrintResults(double **mx, int n) {
         }
         printf("{ ");
         for (i = 0; i < n; ++i) {
-            printf("X%d = %.2f ", i+1, results[i]);
+            printf("X%d = %.2f ", i + 1, results[i]);
         }
-        printf("}");
+        printf("}\n");
     }
 }
 
@@ -259,7 +261,19 @@ void JordanMethod(double **m, int n) {
 
 // START: Menu
 char PrintMainMenuAndReturnOption() {
-    return 'S';
+    char choice;
+
+    printf("Escolha a funcionalidade:\n");
+    printf("C - Conversão\n");
+    printf("S - Sistema Linear\n");
+    printf("E - Equação Algébrica\n");
+    printf("F - Finalizar\n");
+    do {
+        printf("Opção: ");
+        scanf(" %c", &choice);
+    } while (choice != 'C' && choice != 'S' && choice != 'E' && choice != 'F');
+
+    return choice;
 }
 // END: Menu
 
