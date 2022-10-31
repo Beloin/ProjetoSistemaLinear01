@@ -5,6 +5,8 @@
 #include "stdio.h"
 #include <malloc.h>
 #include "math.h"
+#include <locale.h>
+#include <stdlib.h>
 
 // Needed Structs
 typedef struct RetData_ {
@@ -29,6 +31,17 @@ void LinearSystemMenu();
 
 void AlgebraicEquationMenu();
 
+// ------NumericalConversionMenu------
+
+void decimalParaBinario(int decimal);
+void fracaoParaBinario(double fracao);
+void decimalComFracaoParaBinario(double numero);
+void fracaoParaOctal(double fracao);
+void decimalParaOctal(int valor_decimal);
+void decimalComFracaoParaOctal(double numero);
+void decimalComFracaoParaHexadecimal(int i, double f);
+
+// ------NumericalConversionMenu------
 
 int main() {
     char option; // C, S, E or F
@@ -278,7 +291,173 @@ char PrintMainMenuAndReturnOption() {
 // END: Menu
 
 // START: NumericalConversionMenu
-void NumericalConversionMenu() {}
+
+void conferirLetrasHexa(int value) {
+    switch (value)
+    {
+    case 10:
+        printf("A");
+        break;
+    case 11:
+        printf("B");
+        break;
+    case 12:
+        printf("C");
+        break;
+    case 13:
+        printf("D");
+        break;
+    case 14:
+        printf("E");
+        break;
+    case 15:
+        printf("F");
+        break;
+    default:
+        printf("%d", value);
+        break;
+    }
+}
+
+void decimalComFracaoParaHexadecimal(int i, double f) {
+    int res_int[10], index_int = 0, index_frac = 0;
+    double f_aux = f, res_fra[20];
+
+    while (i >= 16) {
+        res_int[index_int] = i % 16;
+        i = (i - i % 16) / 16;
+        index_int++;
+    }
+    res_int[index_int] = i;
+
+    while (f_aux > 0 && index_frac < 20) {
+        double k;
+        f_aux = modf(f_aux * 16, &k);
+        res_fra[index_frac] = k;
+        index_frac++;
+    }
+    // Imprime os valores convertidos
+    printf("Hexadecimal: ");
+    for (i = index_int; i >= 0; i--) {
+        conferirLetrasHexa((int)res_int[i]);
+    }
+    if (f > 0) {
+        printf(".");
+        for (i = 0; i < index_frac; i++) {
+            conferirLetrasHexa((int)res_fra[i]);
+        }
+    }
+    printf("\n");
+}
+
+// Funcao para converter Decimal para Bin?rio
+void decimalParaBinario(int decimal) {
+    char aux[1000000];
+    int i, indice = 0;
+
+    // Divide o decimal por 2 enquanto ele for maior que 0
+    while (decimal > 0) {
+        // Guarda o resto das divis?es
+        int resto = decimal % 2;
+        aux[indice++] = resto + '0';
+
+        decimal /= 2;
+    }
+
+    // O numero binario em aux[] esta invertido: 12d --> 0011b.
+    // abaixo ele sera consertado: 12d --> 0011b --> 1100b.
+    for (i = 0; indice > 0; indice--, i++) {
+        printf("%c", aux[indice - 1]);
+    }
+}
+
+void fracaoParaBinario(double fracao) {
+    // Remove a parte inteira
+    fracao = fracao - (int)fracao;
+
+    // A flag limita a 20 casas decimais
+    int flag = 0;
+    while (fracao != 0.0 && flag < 20) {
+        flag++;
+        fracao *= 2;
+        int resto = (int)fracao;
+        fracao -= resto;
+
+        printf("%d", resto);
+    }
+}
+
+void decimalComFracaoParaBinario(double numero) {
+    decimalParaBinario((int)numero);
+    printf(".");
+    fracaoParaBinario(numero);
+    printf("\n");
+}
+
+void fracaoParaOctal(double fracao) {
+    // Remove a parte inteira
+    fracao = fracao - (int)fracao;
+
+    // A flag limita a 20 casas decimais
+    int flag = 0;
+    while (fracao != 0.0 && flag < 20) {
+        flag++;
+        fracao *= 8;
+        int resto = (int)fracao;
+        fracao -= resto;
+
+        printf("%d", resto);
+    }
+}
+
+// Funcao para converter Decimal para Octal
+void decimalParaOctal(int valor_decimal) {
+    int valor_octal = 0, sequencia = 1;
+
+    // Enquanto o valor decimal for diferente de zero
+    while (valor_decimal != 0) {
+        // Incrementa o valor octal com o resto da divisao do decimal por 8 multiplicado pelo sequencial
+        valor_octal += (valor_decimal % 8) * sequencia;
+
+        // O valor decimal sera dividido por 8
+        valor_decimal /= 8;
+
+        // O sequencial sera multiplicado por 10
+        sequencia *= 10;
+    }
+
+    printf("%d", valor_octal);
+}
+
+void decimalComFracaoParaOctal(double numero) {
+    decimalParaOctal((int)numero);
+    printf(".");
+    fracaoParaOctal(numero);
+    printf("\n");
+}
+
+
+void NumericalConversionMenu() {
+    // Variaveis usadas
+    double valor_decimal, intpart, fracpart;
+
+    // Inicio
+    printf("\nC - Conversao\n\n");
+    printf("Digite o numero decimal a ser convertido em Binario, Octal e Hexadecimal:\n\n");
+    printf("Decimal: ");
+    scanf("%lf", &valor_decimal);
+
+    printf("\n---\n");
+    printf("\nBinario: ");
+    decimalComFracaoParaBinario(valor_decimal);
+
+    printf("\nOctal: ");
+    decimalComFracaoParaOctal(valor_decimal);
+
+    printf("\nHexadecimal: ");
+    fracpart = modf(valor_decimal, &intpart);
+    decimalComFracaoParaHexadecimal(intpart, fracpart);
+}
 // END: NumericalConversionMenu
 
 // START: AlgebraicEquationMenu
