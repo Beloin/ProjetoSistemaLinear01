@@ -34,11 +34,17 @@ void AlgebraicEquationMenu();
 // ------NumericalConversionMenu------
 
 void decimalParaBinario(int decimal);
+
 void fracaoParaBinario(double fracao);
+
 void decimalComFracaoParaBinario(double numero);
+
 void fracaoParaOctal(double fracao);
+
 void decimalParaOctal(int valor_decimal);
+
 void decimalComFracaoParaOctal(double numero);
+
 void decimalComFracaoParaHexadecimal(int i, double f);
 
 // ------NumericalConversionMenu------
@@ -93,10 +99,11 @@ double **CreatePrimitiveMatrix(int i, int j) {
 }
 
 void ShowPrimitiveMatrix(double **m, int i, int j) {
+    int k, l;
     printf("{\n");
-    for (int k = 0; k < i; ++k) {
+    for (k = 0; k < i; ++k) {
         printf("    ");
-        for (int l = 0; l < j; ++l) {
+        for (l = 0; l < j; ++l) {
             printf("%10.3f", m[k][l]);
             if (l != i - 1) {
                 printf(", ");
@@ -148,11 +155,11 @@ void JordanMethod(double **m, int n);
 void LinearSystemMenu() {
     char fileName[200] = "/home/beloin/Documents/aulas/8_sem/CN/Exercícios/project-01-cn-ep1/examples/matrix2.txt";
     printf("Por favor, informe o caminho absoluto do arquivo: ");
-    scanf("%s", fileName);
+    scanf(" %s", fileName);
     RetData_ *data = ReadFileMatrix(fileName);
     double **mx = data->matrix;
     int n = data->n;
-
+    ShowPrimitiveMatrix(mx, n, n + 1);
     JordanMethod(mx, n);
     ShowPrimitiveMatrix(mx, n, n + 1);
 
@@ -179,8 +186,9 @@ void PrintResults(double **mx, int n) {
 }
 
 int GetResultsAndReturnType(double **mx, double *results, int n) {
+    int i;
     int type = 0;
-    for (int i = 0; i < n; ++i) {
+    for (i = 0; i < n; ++i) {
         if (mx[i][i] == 0 && mx[i][n] == 0) {
             results[i] = 0;
             type = 1;
@@ -198,7 +206,7 @@ int GetResultsAndReturnType(double **mx, double *results, int n) {
 }
 
 void JordanMethod(double **m, int n) {
-    int i, j, k, l, i1, aux2, *varsTrack;
+    int i, j, k, l, i1, aux2, *varsTrack, j1, change;
     double multiplier, aux, *aux3;
 
     // Keep track of the vars
@@ -250,9 +258,9 @@ void JordanMethod(double **m, int n) {
     }
 
     // RE-INVERT ROW ORDER
-    for (int j1 = 0; j1 < n; ++j1) {
+    for (j1 = 0; j1 < n; ++j1) {
         if (varsTrack[j1] == j1) continue;
-        int change = varsTrack[j1];
+        change = varsTrack[j1];
         aux3 = m[j1];
         m[j1] = m[change];
         m[change] = aux3;
@@ -293,29 +301,28 @@ char PrintMainMenuAndReturnOption() {
 // START: NumericalConversionMenu
 
 void conferirLetrasHexa(int value) {
-    switch (value)
-    {
-    case 10:
-        printf("A");
-        break;
-    case 11:
-        printf("B");
-        break;
-    case 12:
-        printf("C");
-        break;
-    case 13:
-        printf("D");
-        break;
-    case 14:
-        printf("E");
-        break;
-    case 15:
-        printf("F");
-        break;
-    default:
-        printf("%d", value);
-        break;
+    switch (value) {
+        case 10:
+            printf("A");
+            break;
+        case 11:
+            printf("B");
+            break;
+        case 12:
+            printf("C");
+            break;
+        case 13:
+            printf("D");
+            break;
+        case 14:
+            printf("E");
+            break;
+        case 15:
+            printf("F");
+            break;
+        default:
+            printf("%d", value);
+            break;
     }
 }
 
@@ -336,15 +343,14 @@ void decimalComFracaoParaHexadecimal(int i, double f) {
         res_fra[index_frac] = k;
         index_frac++;
     }
-    // Imprime os valores convertidos
-    printf("Hexadecimal: ");
+
     for (i = index_int; i >= 0; i--) {
-        conferirLetrasHexa((int)res_int[i]);
+        conferirLetrasHexa((int) res_int[i]);
     }
     if (f > 0) {
         printf(".");
         for (i = 0; i < index_frac; i++) {
-            conferirLetrasHexa((int)res_fra[i]);
+            conferirLetrasHexa((int) res_fra[i]);
         }
     }
     printf("\n");
@@ -373,14 +379,14 @@ void decimalParaBinario(int decimal) {
 
 void fracaoParaBinario(double fracao) {
     // Remove a parte inteira
-    fracao = fracao - (int)fracao;
+    fracao = fracao - (int) fracao;
 
     // A flag limita a 20 casas decimais
     int flag = 0;
     while (fracao != 0.0 && flag < 20) {
         flag++;
         fracao *= 2;
-        int resto = (int)fracao;
+        int resto = (int) fracao;
         fracao -= resto;
 
         printf("%d", resto);
@@ -388,7 +394,7 @@ void fracaoParaBinario(double fracao) {
 }
 
 void decimalComFracaoParaBinario(double numero) {
-    decimalParaBinario((int)numero);
+    decimalParaBinario((int) numero);
     printf(".");
     fracaoParaBinario(numero);
     printf("\n");
@@ -396,14 +402,14 @@ void decimalComFracaoParaBinario(double numero) {
 
 void fracaoParaOctal(double fracao) {
     // Remove a parte inteira
-    fracao = fracao - (int)fracao;
+    fracao = fracao - (int) fracao;
 
     // A flag limita a 20 casas decimais
     int flag = 0;
     while (fracao != 0.0 && flag < 20) {
         flag++;
         fracao *= 8;
-        int resto = (int)fracao;
+        int resto = (int) fracao;
         fracao -= resto;
 
         printf("%d", resto);
@@ -430,7 +436,7 @@ void decimalParaOctal(int valor_decimal) {
 }
 
 void decimalComFracaoParaOctal(double numero) {
-    decimalParaOctal((int)numero);
+    decimalParaOctal((int) numero);
     printf(".");
     fracaoParaOctal(numero);
     printf("\n");
@@ -442,19 +448,18 @@ void NumericalConversionMenu() {
     double valor_decimal, intpart, fracpart;
 
     // Inicio
-    printf("\nC - Conversao\n\n");
-    printf("Digite o numero decimal a ser convertido em Binario, Octal e Hexadecimal:\n\n");
+    printf("Digite o numero decimal a ser convertido em Binario, Octal e Hexadecimal:\n");
     printf("Decimal: ");
-    scanf("%lf", &valor_decimal);
+    scanf(" %lf", &valor_decimal);
 
-    printf("\n---\n");
-    printf("\nBinario: ");
+    printf("---\n");
+    printf("Binario: ");
     decimalComFracaoParaBinario(valor_decimal);
 
-    printf("\nOctal: ");
+    printf("Octal: ");
     decimalComFracaoParaOctal(valor_decimal);
 
-    printf("\nHexadecimal: ");
+    printf("Hexadecimal: ");
     fracpart = modf(valor_decimal, &intpart);
     decimalComFracaoParaHexadecimal(intpart, fracpart);
 }
