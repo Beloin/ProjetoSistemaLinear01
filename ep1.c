@@ -8,19 +8,21 @@
 #include <locale.h>
 #include <stdlib.h>
 
-// Needed Structs
+// Estrutura para retorno da leitura do arquivo
 typedef struct RetData_ {
     double **matrix;
     int n;
 } RetData_;
 
 
-// Utils
+// Utils - Funções que podem ser reutilizadas
 double **CreatePrimitiveMatrix(int i, int j);
 
 void ShowPrimitiveMatrix(double **m, int i, int j);
 
-RetData_ *ReadFileMatrix(char file_name[]);
+void FreePrimitiveMatrix(double **mx, int i);
+
+RetData_ *ReadFileMatrix(char fileName[]);
 
 // Force the return to be one of those: C, S, E or F
 char PrintMainMenuAndReturnOption();
@@ -76,12 +78,19 @@ int main() {
 };
 
 // START: UTILS
+
+/**
+ * Cria uma matrix primitiva de double
+ * @param i
+ * @param j
+ * @return
+ */
 double **CreatePrimitiveMatrix(int i, int j) {
     int k, l;
     double **matrix;
     matrix = malloc(sizeof(double) * i);
     if (matrix == NULL) {
-        return NULL;
+        exit(1);
     }
 
     for (k = 0; k <= i; ++k) {
@@ -91,13 +100,34 @@ double **CreatePrimitiveMatrix(int i, int j) {
                 free(matrix[l]);
             }
             free(matrix);
-            return NULL;
+            exit(1);
         }
     }
 
     return matrix;
 }
 
+/**
+ * Limpa a matrix da memória
+ * @param mx
+ * @param i
+ * @param j
+ */
+void FreePrimitiveMatrix(double **mx, int i){
+    int k;
+    for (k = 0; k < i; ++k) {
+//        free(mx[k]);
+    }
+
+    free(mx);
+}
+
+/**
+ * Imprime a matrix primitiva de Double;
+ * @param m
+ * @param i
+ * @param j
+ */
 void ShowPrimitiveMatrix(double **m, int i, int j) {
     int k, l;
     printf("{\n");
@@ -114,10 +144,18 @@ void ShowPrimitiveMatrix(double **m, int i, int j) {
     printf("}\n");
 }
 
+/**
+ * Lê o arquivo e retorna uma estrutura contendo os dados da matrix do sistema linear.
+ * @param fileName
+ * @return
+ */
 RetData_ *ReadFileMatrix(char fileName[]) {
     int n, i, j;
     double **matrix;
     RetData_ *data = malloc(sizeof(RetData_));
+    if (data == NULL) {
+        exit(1);
+    }
     FILE *fp;
 
     fp = fopen(fileName, "r");
@@ -159,13 +197,21 @@ void LinearSystemMenu() {
     RetData_ *data = ReadFileMatrix(fileName);
     double **mx = data->matrix;
     int n = data->n;
-    ShowPrimitiveMatrix(mx, n, n + 1);
+
     JordanMethod(mx, n);
     ShowPrimitiveMatrix(mx, n, n + 1);
 
     PrintResults(mx, n);
+
+    free(data);
+    FreePrimitiveMatrix(mx, n);
 }
 
+/**
+ * Printa os resultados no terminal
+ * @param mx
+ * @param n
+ */
 void PrintResults(double **mx, int n) {
     int type, i;
     double *results = malloc(sizeof(double) * n);
@@ -183,8 +229,17 @@ void PrintResults(double **mx, int n) {
         }
         printf("}\n");
     }
+
+    free(results);
 }
 
+/**
+ * Adiciona os resultados ao array de resultados e retorna o tipo do sistema linear
+ * @param mx
+ * @param results
+ * @param n
+ * @return
+ */
 int GetResultsAndReturnType(double **mx, double *results, int n) {
     int i;
     int type = 0;
@@ -205,6 +260,11 @@ int GetResultsAndReturnType(double **mx, double *results, int n) {
     return type;
 }
 
+/**
+ * Método de JOrndan
+ * @param m
+ * @param n
+ */
 void JordanMethod(double **m, int n) {
     int i, j, k, l, i1, aux2, *varsTrack, j1, change;
     double multiplier, aux, *aux3;
