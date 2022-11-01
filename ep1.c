@@ -35,19 +35,19 @@ void AlgebraicEquationMenu();
 
 // ------NumericalConversionMenu------
 
-void decimalParaBinario(int decimal);
+void DecimalToBinary(int decimal);
 
-void fracaoParaBinario(double fracao);
+void FractionToBinary(double fraction);
 
-void decimalComFracaoParaBinario(double numero);
+void DecimalWithFractionToBinary(double number);
 
-void fracaoParaOctal(double fracao);
+void FractionToOctal(double fraction);
 
-void decimalParaOctal(int valor_decimal);
+void DecimalToOctal(int number);
 
-void decimalComFracaoParaOctal(double numero);
+void DecimalWithFractionToOctal(double number);
 
-void decimalComFracaoParaHexadecimal(int i, double f);
+void DecimalWithFractionToHexadecimal(int i, double f);
 
 // ------NumericalConversionMenu------
 
@@ -113,7 +113,7 @@ double **CreatePrimitiveMatrix(int i, int j) {
  * @param i
  * @param j
  */
-void FreePrimitiveMatrix(double **mx, int i){
+void FreePrimitiveMatrix(double **mx, int i) {
     int k;
     for (k = 0; k < i; ++k) {
 //        free(mx[k]);
@@ -386,7 +386,7 @@ void conferirLetrasHexa(int value) {
     }
 }
 
-void decimalComFracaoParaHexadecimal(int i, double f) {
+void DecimalWithFractionToHexadecimal(int i, double f) {
     int res_int[10], index_int = 0, index_frac = 0;
     double f_aux = f, res_fra[20];
 
@@ -417,111 +417,114 @@ void decimalComFracaoParaHexadecimal(int i, double f) {
 }
 
 // Funcao para converter Decimal para Bin?rio
-void decimalParaBinario(int decimal) {
+void DecimalToBinary(int decimal) {
     char aux[1000000];
-    int i, indice = 0;
+    int i, index = 0, rest;
 
     // Divide o decimal por 2 enquanto ele for maior que 0
     while (decimal > 0) {
-        // Guarda o resto das divis?es
-        int resto = decimal % 2;
-        aux[indice++] = resto + '0';
+        // Guarda o rest das divisões
+        rest = decimal % 2;
+        aux[index++] = rest + '0';
 
         decimal /= 2;
     }
 
     // O numero binario em aux[] esta invertido: 12d --> 0011b.
     // abaixo ele sera consertado: 12d --> 0011b --> 1100b.
-    for (i = 0; indice > 0; indice--, i++) {
-        printf("%c", aux[indice - 1]);
+    for (i = 0; index > 0; index--, i++) {
+        printf("%c", aux[index - 1]);
     }
 }
 
-void fracaoParaBinario(double fracao) {
+void FractionToBinary(double fraction) {
+    int rest, flag;
+
     // Remove a parte inteira
-    fracao = fracao - (int) fracao;
+    fraction = fraction - (int) fraction;
 
     // A flag limita a 20 casas decimais
-    int flag = 0;
-    while (fracao != 0.0 && flag < 20) {
+    flag = 0;
+    while (fraction != 0.0 && flag < 20) {
         flag++;
-        fracao *= 2;
-        int resto = (int) fracao;
-        fracao -= resto;
+        fraction *= 2;
+        rest = (int) fraction;
+        fraction -= rest;
 
-        printf("%d", resto);
+        printf("%d", rest);
     }
 }
 
-void decimalComFracaoParaBinario(double numero) {
-    decimalParaBinario((int) numero);
+void DecimalWithFractionToBinary(double number) {
+    DecimalToBinary((int) number);
     printf(".");
-    fracaoParaBinario(numero);
+    FractionToBinary(number);
     printf("\n");
 }
 
-void fracaoParaOctal(double fracao) {
+void FractionToOctal(double fraction) {
+    int flag, rest;
     // Remove a parte inteira
-    fracao = fracao - (int) fracao;
+    fraction = fraction - (int) fraction;
 
     // A flag limita a 20 casas decimais
-    int flag = 0;
-    while (fracao != 0.0 && flag < 20) {
+    flag = 0;
+    while (fraction != 0.0 && flag < 20) {
         flag++;
-        fracao *= 8;
-        int resto = (int) fracao;
-        fracao -= resto;
+        fraction *= 8;
+        rest = (int) fraction;
+        fraction -= rest;
 
-        printf("%d", resto);
+        printf("%d", rest);
     }
 }
 
 // Funcao para converter Decimal para Octal
-void decimalParaOctal(int valor_decimal) {
-    int valor_octal = 0, sequencia = 1;
+void DecimalToOctal(int number) {
+    int valor_octal = 0, sequence = 1;
 
     // Enquanto o valor decimal for diferente de zero
-    while (valor_decimal != 0) {
+    while (number != 0) {
         // Incrementa o valor octal com o resto da divisao do decimal por 8 multiplicado pelo sequencial
-        valor_octal += (valor_decimal % 8) * sequencia;
+        valor_octal += (number % 8) * sequence;
 
         // O valor decimal sera dividido por 8
-        valor_decimal /= 8;
+        number /= 8;
 
         // O sequencial sera multiplicado por 10
-        sequencia *= 10;
+        sequence *= 10;
     }
 
     printf("%d", valor_octal);
 }
 
-void decimalComFracaoParaOctal(double numero) {
-    decimalParaOctal((int) numero);
+void DecimalWithFractionToOctal(double number) {
+    DecimalToOctal((int) number);
     printf(".");
-    fracaoParaOctal(numero);
+    FractionToOctal(number);
     printf("\n");
 }
 
 
 void NumericalConversionMenu() {
     // Variaveis usadas
-    double valor_decimal, intpart, fracpart;
+    double decimalValue, intPart, fracPart;
 
     // Inicio
     printf("Digite o numero decimal a ser convertido em Binario, Octal e Hexadecimal:\n");
     printf("Decimal: ");
-    scanf(" %lf", &valor_decimal);
+    scanf(" %lf", &decimalValue);
 
     printf("---\n");
     printf("Binario: ");
-    decimalComFracaoParaBinario(valor_decimal);
+    DecimalWithFractionToBinary(decimalValue);
 
     printf("Octal: ");
-    decimalComFracaoParaOctal(valor_decimal);
+    DecimalWithFractionToOctal(decimalValue);
 
     printf("Hexadecimal: ");
-    fracpart = modf(valor_decimal, &intpart);
-    decimalComFracaoParaHexadecimal(intpart, fracpart);
+    fracPart = modf(decimalValue, &intPart);
+    DecimalWithFractionToHexadecimal(intPart, fracPart);
 }
 // END: NumericalConversionMenu
 
