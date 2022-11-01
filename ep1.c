@@ -1,5 +1,9 @@
 //
-// Created by beloin on 10/24/22.
+// Trabalho 01 - Cálculo Numérico
+// Integrantes:
+// 1. Davi Leal
+// 2. Lara dos Santos Lopes
+// 3. Beloin Sena de Farias Rodrigues
 //
 
 #include "stdio.h"
